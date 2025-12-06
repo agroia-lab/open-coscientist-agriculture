@@ -24,15 +24,15 @@ from coscientist.global_state import CoscientistState
 def get_llm_options():
     """Get available LLM options for the chat interface."""
     return {
-        "o3": ChatOpenAI(model="o3", max_tokens=5000, max_retries=3),
-        "Gemini 2.5 Pro": ChatGoogleGenerativeAI(
-            model="gemini-2.5-pro",
+        "GPT-5.1": ChatOpenAI(model="gpt-5.1", max_tokens=16000, max_retries=3),
+        "Gemini 3 Pro": ChatGoogleGenerativeAI(
+            model="gemini-3-pro",
             temperature=1.0,
             max_retries=3,
-            max_tokens=5000,
+            max_tokens=16000,
         ),
-        "Claude Sonnet 4": ChatAnthropic(
-            model="claude-sonnet-4-20250514", max_tokens=5000, max_retries=3
+        "Claude Opus 4.5": ChatAnthropic(
+            model="claude-opus-4.5", max_tokens=8000, max_retries=3
         ),
     }
 
