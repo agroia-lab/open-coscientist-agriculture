@@ -19,7 +19,7 @@
     "TOTAL_WORDS": 1200,
     "REPORT_FORMAT": "APA",
     "MAX_ITERATIONS": 3,
-    "AGENT_ROLE": null,
+    "AGENT_ROLE": "You are an agricultural research specialist with expertise in weed science, crop protection, herbicide resistance management, and sustainable farming practices. Focus on peer-reviewed agricultural journals and scientific sources.",
     "SCRAPER": "bs",
     "MAX_SCRAPER_WORKERS": 15,
     "MAX_SUBTOPICS": 3,

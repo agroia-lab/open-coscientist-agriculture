@@ -52,6 +52,20 @@ async def main():
     print("   - Meta Review: Claude Opus 4.5")
     print("   - Final Report: Claude Opus 4.5")
     
+    # Agricultural specialist fields for hypothesis generation
+    AGRICULTURE_SPECIALIST_FIELDS = [
+        "weed science",
+        "plant pathology",
+        "agronomy",
+        "soil science",
+        "herbicide physiology",
+        "parasitic plant biology",
+        "integrated pest management",
+        "crop physiology",
+        "plant biochemistry",
+        "agricultural ecology",
+    ]
+    
     config = CoscientistConfig(
         literature_review_agent_llm=gpt51,
         generation_agent_llms={"opus": opus45, "gpt": gpt51},
@@ -59,8 +73,10 @@ async def main():
         evolution_agent_llms={"gpt": gpt51},
         meta_review_agent_llm=opus45,
         supervisor_agent_llm=gpt51,
-        final_report_agent_llm=opus45
+        final_report_agent_llm=opus45,
+        specialist_fields=AGRICULTURE_SPECIALIST_FIELDS,
     )
+    print(f"🌱 Specialist fields: {', '.join(AGRICULTURE_SPECIALIST_FIELDS[:5])}...")
     
     # 3. Setup Framework
     cosci = CoscientistFramework(config, state_manager)
