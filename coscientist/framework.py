@@ -32,27 +32,33 @@ from coscientist.supervisor_agent import build_supervisor_agent
 # Generally reasoning models are better suited for the scientific reasoning
 # tasks entailed by the Coscientist system.
 _SMARTER_LLM_POOL = {
-    "o3": ChatOpenAI(model="gpt-5.1", max_tokens=16_000, max_retries=3),
+    "o3": ChatOpenAI(model="gpt-4o", max_tokens=16_000, max_retries=3),
     "gemini-2.5-pro": ChatGoogleGenerativeAI(
-        model="gemini-3-pro",
+        model="gemini-1.5-pro",
         temperature=1.0,
         max_retries=3,
         max_tokens=16_000,
     ),
-    "claude-sonnet-4-20250514": ChatAnthropic(
-        model="claude-opus-4.5", max_tokens=8_000, max_retries=3
+    "claude-sonnet-4-20250514": ChatGoogleGenerativeAI(
+        model="gemini-1.5-pro",
+        temperature=1.0,
+        max_retries=3,
+        max_tokens=16_000,
     ),
 }
 _CHEAPER_LLM_POOL = {
-    "o4-mini": ChatOpenAI(model="gpt-5.1", max_tokens=16_000, max_retries=3),
+    "o4-mini": ChatOpenAI(model="gpt-4o-mini", max_tokens=16_000, max_retries=3),
     "gemini-2.5-flash": ChatGoogleGenerativeAI(
-        model="gemini-3-flash",
+        model="gemini-1.5-flash",
         temperature=1.0,
         max_retries=3,
         max_tokens=16_000,
     ),
-    "claude-sonnet-4-20250514": ChatAnthropic(
-        model="claude-opus-4.5", max_tokens=8_000, max_retries=3
+    "claude-sonnet-4-20250514": ChatGoogleGenerativeAI(
+        model="gemini-1.5-pro",
+        temperature=1.0,
+        max_retries=3,
+        max_tokens=16_000,
     ),
 }
 
@@ -88,9 +94,7 @@ class CoscientistConfig:
 
     def __init__(
         self,
-        literature_review_agent_llm: BaseChatModel = _SMARTER_LLM_POOL[
-            "claude-sonnet-4-20250514"
-        ],
+        literature_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL["gemini-2.5-flash"],
         generation_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         reflection_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         evolution_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
