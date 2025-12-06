@@ -1,130 +1,195 @@
-# 🧪 Open CoScientist Agents
+# 🌱 Open CoScientist Agents: Agriculture Edition
 
-A comprehensive multi-agent system for AI-driven scientific discovery based on Google DeepMind's [AI co-scientist](https://arxiv.org/abs/2502.18864), built with LangGraph and [GPT Researcher](https://github.com/assafelovic/gpt-researcher). The aim is for this system to accelerate scientific research through collaborative AI agents that generate, critique, rank, and evolve scientific hypotheses using tournament-style competition.
+A multi-agent AI system for **agricultural research** and scientific discovery, specialized for weed science, crop protection, and sustainable farming. Based on [Open CoScientist Agents](https://github.com/conradry/open-coscientist-agents) and Google DeepMind's [AI co-scientist](https://arxiv.org/abs/2502.18864).
 
-This implementation uses `Gemini 2.5 Pro`, `Claude Sonnet 4`, and `o3` in collaboration and competition.
+Built with LangGraph, [GPT Researcher](https://github.com/assafelovic/gpt-researcher), GPT-5.1, and Claude Opus 4.5.
 
 ![App Demo](assets/app_demo.gif)
+
+## 🎯 Agricultural Focus
+
+This fork is optimized for agricultural research with:
+
+- **10 Specialist Fields**: Weed science, agronomy, plant pathology, soil science, herbicide physiology, parasitic plant biology, integrated pest management, crop physiology, plant biochemistry, agricultural ecology
+- **Agricultural Agent Role**: Configured for crop protection and sustainable farming research
+- **Academic Search**: Tavily with PubMed, ScienceDirect, and agricultural journal access
+
+## 📋 Example Research Output
+
+See our first research report on **Phelipanche ramosa (broomrape) control in industrial tomato**:
+- [`Phelipanche_FULL_Research_Report.md`](Phelipanche_FULL_Research_Report.md) - 76,000+ characters covering:
+  - ALS herbicide resistance mechanisms
+  - Maleic hydrazide and prohexadione-calcium efficacy
+  - Trial design for Chile's Central Valley
+  - 9 testable research hypotheses
 
 ## Key Features
 
 ### Multi-Agent Architecture
-- **Literature Review Agent**: Systematically decomposes research goals and conducts comprehensive literature analysis
-- **Generation Agents**: Create novel scientific hypotheses using multiple reasoning approaches
+- **Literature Review Agent**: Decomposes research goals and conducts comprehensive agricultural literature analysis
+- **Generation Agents**: Create novel hypotheses using multiple reasoning approaches (causal, systems, statistical, etc.)
 - **Reflection Agents**: Perform deep verification and causal reasoning analysis
-- **Evolution Agents**: Refine and improve hypotheses based on feedback and competition
-- **Meta-Review Agent**: Synthesizes insights across multiple research directions
-- **Supervisor Agent**: Orchestrates the entire research workflow -- decides which actions to take next and when to finish the research.
+- **Evolution Agents**: Refine hypotheses based on feedback and competition
+- **Meta-Review Agent**: Synthesizes insights across research directions
+- **Supervisor Agent**: Orchestrates the research workflow
 - **Final Report Agent**: Generates comprehensive research summaries
 
 ### Tournament-Style Hypothesis Competition
-- **ELO Rating System**: Ranks hypotheses through head-to-head competitive analysis
-- **Debate Transcripts**: Full records of why one hypothesis outperforms another
-- **Win-Loss Statistics**: Track performance across multiple evaluation rounds
-- **Hypothesis Evolution**: See how ideas improve through iterative refinement
-
-### Interactive Web Interface
-- **Streamlit Dashboard**: Comprehensive visualization of research results
-- **Real-time Monitoring**: Track research progress and agent activities
-- **Hypothesis Explorer**: Deep dive into individual hypotheses and their reasoning
-- **Tournament Viewer**: Analyze competitive dynamics between ideas
+- **ELO Rating System**: Ranks hypotheses through head-to-head analysis
+- **Debate Transcripts**: Records why one hypothesis outperforms another
+- **Win-Loss Statistics**: Tracks performance across evaluation rounds
+- **Hypothesis Evolution**: Shows how ideas improve through refinement
 
 ## Installation
 
 ### Prerequisites
-- Python 3.12 or higher
-- A boatload of API keys
-
-### Install from PyPI (Coming Soon)
-```bash
-pip install open-coscientist-agents
-```
+- Python 3.11+
+- macOS (tested on M1), Linux, or Windows
 
 ### Install from Source
 ```bash
-git clone https://github.com/conradry/open-coscientist-agents.git
-cd open-coscientist-agents
+git clone https://github.com/lfleon9b/open-coscientist-agriculture.git
+cd open-coscientist-agriculture
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e .
 ```
 
 ## Configuration
 
 ### Environment Variables
-Set up your API keys for model providers:
+Create a `.env` file with your API keys:
+
 ```bash
-export OPENAI_API_KEY="your-openai-key"
-export ANTHROPIC_API_KEY="your-anthropic-key"
-export GOOGLE_API_KEY="your-google-key"
+# Required
+OPENAI_API_KEY="your-openai-key"
+ANTHROPIC_API_KEY="your-anthropic-key"
+TAVILY_API_KEY="your-tavily-key"
+
+# Optional (for Google models)
+GOOGLE_API_KEY="your-google-key"
+
+# Optional (for PubMed Central direct access)
+NCBI_API_KEY="your-ncbi-key"  # Free from https://www.ncbi.nlm.nih.gov/account/
+
+# Optional (for monitoring)
+LANGSMITH_API_KEY="your-langsmith-key"
+LANGSMITH_PROJECT="your-project-name"
+LANGSMITH_TRACING="true"
 ```
 
-Set up your API key for Tavily search:
-```bash
-export TAVILY_API_KEY='your-api-key'
+## Quick Start
+
+### Run Agricultural Research
+```python
+import asyncio
+from run_agriculture_research import main
+
+# Edit GOAL in run_agriculture_research.py, then:
+asyncio.run(main())
 ```
 
-Optional, but highly recommended for monitoring and debugging, set up API keys for LangSmith:
+Or from command line:
 ```bash
-export LANGSMITH_ENDPOINT="https://api.smith.langchain.com"
-export LANGSMITH_API_KEY="your-langsmith-api-key"
-export LANGSMITH_PROJECT="your-langsmith-project"
+source venv/bin/activate
+export $(grep -v '^#' .env | xargs)
+python run_agriculture_research.py
+```
+
+### Quick Test (Low Cost)
+```bash
+python quick_test.py  # ~$0.05-0.10
+```
+
+### Export Reports
+```bash
+python export_report.py
 ```
 
 ### Web Interface
-Launch the interactive dashboard:
 ```bash
 cd app
 pip install -r viewer_requirements.txt
 streamlit run tournament_viewer.py
 ```
 
-Features include:
-- **Configuration Agent**: Set up research parameters
-- **Literature Review**: Explore research foundation
-- **Tournament Rankings**: View hypothesis competition results
-- **Proximity Graph**: Semantic relationship visualization
-- **Meta-Reviews**: Synthesized research insights
-- **Supervisor Decisions**: Workflow orchestration logs
-- **Final Report**: Comprehensive research summary
+## Example Research Questions
 
-### Start a research run in Python
+### Weed Science
 ```python
-import asyncio
-from coscientist.framework import CoscientistConfig, CoscientistFramework
-from coscientist.global_state import CoscientistState, CoscientistStateManager
-
-goal = "How does the gut microbiome influence rheumatoid arthritis and can probiotics help to mitigate symptoms? If so, which ones are promising?"
-initial_state = CoscientistState(goal=goal)
-
-config = CoscientistConfig()
-state_manager = CoscientistStateManager(initial_state)
-cosci = CoscientistFramework(config, state_manager)
-
-final_report, final_meta_review = asyncio.run(cosci.run())
+GOAL = "What are the main herbicide resistance mechanisms in Palmer amaranth?"
 ```
 
-## Performance & Scalability
+### Parasitic Weeds
+```python
+GOAL = "What alternative herbicides show potential for Phelipanche ramosa control in tomato?"
+```
 
-In principle, this system can be easily scaled with asynchronous execution of many tasks. In practice, API rate limits make it difficult to run in parallel. Future work will explore ways to get around this by smartly allocating work to different providers.
+### Integrated Pest Management
+```python
+GOAL = "How can cover crops reduce herbicide dependency in corn-soybean rotations?"
+```
 
-Currently designed to work with 20-30 hypotheses in a tournament. Scaling that to more will require optimizations like smarter prioritization of head-to-head matches, summarizing context to make meta-review tractable, and actually supporting asynchronous execution.
+## Models Used
 
+| Agent | Model | Purpose |
+|-------|-------|---------|
+| Literature Review | GPT-5.1 | Research decomposition |
+| Hypothesis Generation | Claude Opus 4.5 + GPT-5.1 | Creative ideation |
+| Reflection | Claude Opus 4.5 + GPT-5.1 | Deep verification |
+| Meta Review | Claude Opus 4.5 | Synthesis |
+| Final Report | Claude Opus 4.5 | Writing |
+| Web Research | GPT-5.1 + Tavily | Literature search |
 
-## Caveats and sharp edges
+## Cost Estimates
 
-- The system isn't fully configurable and there are fields that are hardcoded (like number of hypotheses, subtopics for literature review, etc.).
-- Obviously no tests or evaluations yet. Getting feedback will help to steer this project in the right direction for research usefulness.
+| Run Type | Estimated Cost | Time |
+|----------|---------------|------|
+| Quick Test | $0.05-0.10 | 2-5 min |
+| Full Research | $2-5 | 10-20 min |
+| Complex Query | $5-15 | 30-60 min |
+
+## Project Structure
+
+```
+open-coscientist-agriculture/
+├── coscientist/           # Core agent system
+│   ├── framework.py       # Main orchestration
+│   ├── prompts/           # Agent prompts
+│   └── researcher_config.json  # GPT-Researcher config
+├── app/                   # Streamlit web interface
+├── run_agriculture_research.py  # Main research script
+├── quick_test.py          # Low-cost validation
+├── export_report.py       # Report extraction
+└── Phelipanche_FULL_Research_Report.md  # Example output
+```
+
+## Limitations
+
+- **Paywalled Journals**: Cannot access full text of subscription journals (uses abstracts)
+- **Rate Limits**: API rate limits may slow parallel execution
+- **Cost**: Premium models (GPT-5.1, Opus 4.5) increase costs
+- **Regional Data**: May have limited access to Chile-specific agricultural data
 
 ## Contributing
 
-We welcome contributions!
+Contributions welcome! Areas of interest:
+- Additional agricultural specialist fields
+- Integration with agricultural databases (USDA, FAO)
+- Support for local document ingestion
+- Cost optimization strategies
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE)
 
 ## Acknowledgments
 
-- Inspired by Google DeepMind's research on AI-assisted scientific discovery
-- Built with [LangGraph](https://github.com/langchain-ai/langgraph) for agent orchestration
-- Uses [GPT Researcher](https://github.com/assafelovic/gpt-researcher) for literature analysis
-- Visualization powered by [Streamlit](https://streamlit.io/) and [Plotly](https://plotly.com/)
+- Based on [Open CoScientist Agents](https://github.com/conradry/open-coscientist-agents) by @conradry
+- Inspired by Google DeepMind's [AI co-scientist](https://arxiv.org/abs/2502.18864)
+- Built with [LangGraph](https://github.com/langchain-ai/langgraph), [GPT Researcher](https://github.com/assafelovic/gpt-researcher)
+- Visualization by [Streamlit](https://streamlit.io/)
+
+---
+
+**🌾 Happy Researching!**
