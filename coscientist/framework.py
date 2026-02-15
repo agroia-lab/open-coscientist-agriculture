@@ -175,21 +175,29 @@ class CoscientistConfig:
         self.final_report_agent_llm = final_report_agent_llm
         if specialist_fields is None:
             self.specialist_fields = [
+                # Weed biology and management
                 "weed science",
                 "weed ecology",
                 "herbicide resistance",
                 "integrated weed management",
-                "precision agriculture",
-                "agronomy",
                 "crop-weed competition",
                 "soil seed bank ecology",
-                "site-specific weed management",
                 "cover crop science",
-                "agricultural robotics and automation",
-                "remote sensing for agriculture",
                 "herbicide application technology",
                 "agroecology",
                 "crop rotation and diversification",
+                # Precision agriculture and technology
+                "precision agriculture",
+                "site-specific weed management",
+                "agricultural robotics and automation",
+                "remote sensing for agriculture",
+                "geographic information systems (GIS)",
+                # Quantitative and analytical methods
+                "agricultural statistics and experimental design",
+                "Bayesian data analysis",
+                "spatial analysis and geostatistics",
+                "mechanistic and simulation modelling",
+                "agronomy",
             ]
         else:
             self.specialist_fields = specialist_fields

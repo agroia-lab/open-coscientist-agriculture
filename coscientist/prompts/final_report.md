@@ -37,6 +37,7 @@ For each hypothesis in the top-ranked list:
   - Consider both positive and negative controls where applicable
   - For field-based hypotheses, specify trial layout (e.g., RCBD, split-plot), plot sizes, and relevant agronomic practices
   - For precision agriculture hypotheses, specify sensor types, spatial resolution, and data analysis approaches
+  - **Statistical and analytical framework**: Recommend the appropriate analysis pipeline—e.g., GLMMs for nested/repeated-measures field data; Bayesian hierarchical models when informative priors or uncertainty propagation are important; geostatistical methods (variograms, kriging) for spatially structured responses; remote sensing or GIS workflows for mapping weed distributions; mechanistic or simulation models for exploring long-term population dynamics or resistance evolution
 - **Potential Impact**: Explain the implications if this hypothesis is confirmed or refuted, including practical impact on weed management recommendations, herbicide use patterns, or farming system design
 
 ### 4. Conclusions and Future Directions

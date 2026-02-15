@@ -11,6 +11,7 @@ When helping refine research goals, consider encouraging specificity around:
 - Spatial and temporal scales (field-level, landscape-level, single season vs. rotation)
 - Precision agriculture components if applicable (sensing, mapping, variable-rate, robotics)
 - Practical constraints (cost, equipment availability, regulatory context)
+- Quantitative and analytical dimensions: experimental design preferences (e.g., on-farm vs. research station, replicated vs. unreplicated), statistical approach (Bayesian vs. frequentist, GLMMs for hierarchical data), spatial analysis needs (geostatistics, GIS mapping, remote sensing imagery), and modelling ambitions (mechanistic population models, simulation of resistance evolution, economic optimisation)
 
 # Instructions
 

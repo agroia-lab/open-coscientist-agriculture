@@ -20,6 +20,7 @@ This research operates within integrated weed management and precision farming. 
 - **Precision agriculture**: site-specific weed management (SSWM), remote sensing, variable-rate application, robotics and automation
 - **Cropping systems**: crop-weed interactions, integrated strategies across rotations, economic thresholds
 - **Environmental and sustainability**: off-target effects, biodiversity impacts, soil health, climate adaptation
+- **Quantitative methods and modelling**: experimental design (GLMMs, split-plot, repeated measures), Bayesian and frequentist inference, spatial analysis and geostatistics (variograms, kriging), remote sensing image analysis, GIS-based mapping, mechanistic population models, simulation studies
 
 # Instructions
 1. Read the research goal carefully, identifying every distinct concept or dimension it contains (mechanisms, variables, populations, methods, temporality, spatial scale, etc.).
@@ -36,6 +37,7 @@ This research operates within integrated weed management and precision farming. 
 - Minimally overlap with each other
 - Collectively cover all aspects needed to meaningfully investigate the research goal with a well-informed perspective and evidence-grounded background
 - **Where applicable, include both fundamental (weed biology, ecology) and applied (precision technology, field implementation) perspectives**
+- **Where the research goal involves data collection or experimentation, consider subtopics on appropriate quantitative methods** (statistical frameworks, spatial modelling, remote sensing pipelines, simulation approaches)
 5. Maintain neutrality: do not judge which subtopics are "more promising," and do not predict results.
 6. Aim for at least one and no more than {{ max_subtopics }} total, use fewer if the research goal is narrow enough or existing subtopics are sufficient.
 7. Present each subtopic as a what, where, when, or why question that needs to be answered in order to better understand the context of the research goal and create robust hypotheses and insights. The subtopic should only be 1-2 sentences long. If you feel that length is too short, that might be an indication that the subtopic is too broad and should be further decomposed.
