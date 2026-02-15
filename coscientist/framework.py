@@ -6,6 +6,7 @@ by a supervisor agent.
 
 import logging
 import math
+import os
 import random
 
 import numpy as np
@@ -14,6 +15,56 @@ from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+logger = logging.getLogger(__name__)
+
+
+def validate_api_keys() -> list[str]:
+    """
+    Validate that required API keys are present in environment variables.
+
+    Returns a list of warnings for missing optional keys.
+
+    Raises
+    ------
+    EnvironmentError
+        If required API keys are missing.
+    """
+    missing_required = []
+    warnings = []
+
+    # Required keys
+    required_keys = {
+        "OPENAI_API_KEY": "OpenAI API (used for embeddings and default LLMs)",
+        "TAVILY_API_KEY": "Tavily API (used for web research via GPT-Researcher)",
+    }
+    for key, description in required_keys.items():
+        if not os.environ.get(key):
+            missing_required.append(f"  - {key}: {description}")
+
+    if missing_required:
+        raise EnvironmentError(
+            "Missing required API keys. Please set the following environment variables:\n"
+            + "\n".join(missing_required)
+            + "\n\nSee README.md for setup instructions."
+        )
+
+    # Optional keys - warn but don't fail
+    optional_keys = {
+        "ANTHROPIC_API_KEY": "Anthropic API (needed for Claude models)",
+        "GOOGLE_API_KEY": "Google API (needed for Gemini models)",
+    }
+    for key, description in optional_keys.items():
+        if not os.environ.get(key):
+            warnings.append(f"  - {key}: {description}")
+
+    if warnings:
+        logger.warning(
+            "Missing optional API keys (some features may not work):\n"
+            + "\n".join(warnings)
+        )
+
+    return warnings
 
 from coscientist.evolution_agent import build_evolution_agent
 from coscientist.final_report_agent import build_final_report_agent
@@ -110,6 +161,9 @@ class CoscientistConfig:
         ),
         specialist_fields: list[str] | None = None,
     ):
+        # Validate API keys on config initialization
+        validate_api_keys()
+
         # TODO: Add functionality for overriding GPTResearcher config.
         self.literature_review_agent_llm = literature_review_agent_llm
         self.generation_agent_llms = generation_agent_llms

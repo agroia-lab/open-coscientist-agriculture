@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Coscientist state files
+*.pkl
+*.pickle
+.streamlit/secrets.toml
+error.log

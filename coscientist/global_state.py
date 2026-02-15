@@ -101,8 +101,8 @@ class CoscientistState:
                 f"or call CoscientistState.clear_goal_directory('{goal}') to start fresh."
             )
 
-        # Create the directory
-        Path(self._output_dir).mkdir(parents=True, exist_ok=True)
+        # Create the directory with owner-only permissions (0o700)
+        Path(self._output_dir).mkdir(parents=True, exist_ok=True, mode=0o700)
 
         # Store goal metadata for discoverability
         goal_file = os.path.join(self._output_dir, "goal.txt")
