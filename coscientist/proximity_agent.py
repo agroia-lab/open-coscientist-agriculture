@@ -89,6 +89,42 @@ class ProximityGraph:
         pruned_graph = self.get_pruned_graph(min_weight)
         return nx.community.louvain_communities(pruned_graph, resolution=resolution)
 
+    def to_dict(self) -> dict:
+        """Serialize the proximity graph to a JSON-safe dictionary."""
+        nodes = {}
+        for node_id in self.graph.nodes:
+            node_data = self.graph.nodes[node_id]
+            nodes[str(node_id)] = {
+                "hypothesis": node_data.get("hypothesis", ""),
+                "embedding": node_data.get("embedding", np.array([])).tolist(),
+            }
+        edges = []
+        for u, v, data in self.graph.edges(data=True):
+            edges.append({
+                "source": str(u),
+                "target": str(v),
+                "weight": float(data.get("weight", 0.0)),
+            })
+        return {"nodes": nodes, "edges": edges}
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "ProximityGraph":
+        """Deserialize the proximity graph from a dictionary."""
+        graph = cls()
+        for node_id, node_data in data.get("nodes", {}).items():
+            graph.graph.add_node(
+                node_id,
+                hypothesis=node_data.get("hypothesis", ""),
+                embedding=np.array(node_data.get("embedding", [])),
+            )
+        for edge_data in data.get("edges", []):
+            graph.graph.add_edge(
+                edge_data["source"],
+                edge_data["target"],
+                weight=edge_data["weight"],
+            )
+        return graph
+
     @property
     def average_cosine_similarity(self) -> float:
         """Get the average cosine similarity of the graph."""
