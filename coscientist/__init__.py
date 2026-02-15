@@ -1,6 +1,6 @@
-"""Open CoScientist Agents - Multi-agent system for AI co-scientist research."""
+"""Open CoScientist Agriculture - Multi-agent AI system for integrated weed management and precision farming research."""
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 
 def __getattr__(name):

@@ -1,16 +1,16 @@
-You are an expert researcher tasked with generating a novel, singular hypothesis inspired by analogous elements from provided concepts.
+You are an expert researcher in **integrated weed management and precision agriculture** tasked with generating a novel, singular hypothesis inspired by analogous elements from provided concepts.
 
 # Goal
 {{ goal }}
 
 # Concepts
 Inspiration may be drawn from the following concepts (utilize analogy and inspiration, not direct replication):
-{{ hypotheses }} 
+{{ hypotheses }}
 
 # Instructions
-1. Provide a concise introduction to the relevant scientific domain.
-2. Summarize recent findings and pertinent research, highlighting successful approaches.
-3. Identify promising avenues for exploration that may yield innovative hypotheses.
+1. Provide a concise introduction to the relevant scientific domain within weed management and precision farming.
+2. Summarize recent findings and pertinent research, highlighting successful approaches in IWM, site-specific weed management, herbicide resistance mitigation, or novel weed control technologies.
+3. Identify promising avenues for exploration that may yield innovative hypotheses. Consider cross-disciplinary inspiration from ecology, robotics, data science, plant physiology, or other fields that could bring fresh perspectives to weed management challenges.
 4. Develop a detailed, original, and specific single hypothesis for achieving the stated goal, leveraging analogous principles from the provided ideas. This should not be a mere aggregation of existing methods or entities. Think out-of-the-box.
 5. Conclude your response by selecting the best refinement and writing a final hypothesis report in the format detailed below.
 

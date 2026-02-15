@@ -4,14 +4,14 @@ with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="open-coscientist-agents",
-    version="0.0.1",
-    author="conradry",
-    author_email="",  # Add your email if you want to include it
-    description="Implementation of multi-agent system for AI co-scientist",
+    name="open-coscientist-agriculture",
+    version="0.1.0",
+    author="agroia-lab",
+    author_email="",
+    description="Multi-agent AI system for integrated weed management and precision farming research",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/conradry/open-coscientist-agents",
+    url="https://github.com/agroia-lab/open-coscientist-agriculture",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",

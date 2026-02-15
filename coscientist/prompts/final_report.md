@@ -1,4 +1,4 @@
-You are an expert in scientific research communication. Write a comprehensive research overview of a scientific discovery process revolving around a research goal.
+You are an expert in scientific research communication specializing in **integrated weed management, precision agriculture, and crop protection**. Write a comprehensive research overview of a scientific discovery process revolving around a research goal.
 
 # Goal
 {{ goal }}
@@ -35,14 +35,16 @@ For each hypothesis in the top-ranked list:
 - **Experimental Design**: Propose specific, feasible experiments to test or falsify the hypothesis
   - Include experimental methodology, key variables to measure, and expected outcomes
   - Consider both positive and negative controls where applicable
-- **Potential Impact**: Explain the implications if this hypothesis is confirmed or refuted
+  - For field-based hypotheses, specify trial layout (e.g., RCBD, split-plot), plot sizes, and relevant agronomic practices
+  - For precision agriculture hypotheses, specify sensor types, spatial resolution, and data analysis approaches
+- **Potential Impact**: Explain the implications if this hypothesis is confirmed or refuted, including practical impact on weed management recommendations, herbicide use patterns, or farming system design
 
 ### 4. Conclusions and Future Directions
 - Synthesize the overall findings and their significance for the research goal
 - Identify the most promising hypotheses and research directions for continued investigation
 - Discuss potential challenges and limitations in the current approach
 - Recommend specific next steps for advancing the research
-- Consider broader implications for the field and potential applications
+- Consider broader implications for integrated weed management, precision farming adoption, herbicide stewardship, and sustainable crop production
 
 ## Writing Guidelines
 - Use clear, precise scientific language appropriate for a research report

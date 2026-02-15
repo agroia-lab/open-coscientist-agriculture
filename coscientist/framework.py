@@ -174,7 +174,23 @@ class CoscientistConfig:
         self.proximity_agent_embedding_model = proximity_agent_embedding_model
         self.final_report_agent_llm = final_report_agent_llm
         if specialist_fields is None:
-            self.specialist_fields = ["biology"]
+            self.specialist_fields = [
+                "weed science",
+                "weed ecology",
+                "herbicide resistance",
+                "integrated weed management",
+                "precision agriculture",
+                "agronomy",
+                "crop-weed competition",
+                "soil seed bank ecology",
+                "site-specific weed management",
+                "cover crop science",
+                "agricultural robotics and automation",
+                "remote sensing for agriculture",
+                "herbicide application technology",
+                "agroecology",
+                "crop rotation and diversification",
+            ]
         else:
             self.specialist_fields = specialist_fields
 
