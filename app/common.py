@@ -1,4 +1,3 @@
-import pickle
 from typing import Optional
 
 import streamlit as st
@@ -8,10 +7,9 @@ from coscientist.global_state import CoscientistState
 
 
 def load_coscientist_state(filepath: str) -> Optional[CoscientistState]:
-    """Load a CoscientistState from a pickle file."""
+    """Load a CoscientistState from a JSON (or legacy pickle) file."""
     try:
-        with open(filepath, "rb") as f:
-            return pickle.load(f)
+        return CoscientistState.load(filepath)
     except Exception as e:
         st.error(f"Error loading state file: {e}")
         return None

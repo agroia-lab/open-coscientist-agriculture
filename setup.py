@@ -4,14 +4,14 @@ with open("README.md", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="open-coscientist-agents",
-    version="0.0.1",
-    author="conradry",
-    author_email="",  # Add your email if you want to include it
-    description="Implementation of multi-agent system for AI co-scientist",
+    name="open-coscientist-agriculture",
+    version="0.1.0",
+    author="agroia-lab",
+    author_email="",
+    description="Multi-agent AI system for integrated weed management and precision farming research",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/conradry/open-coscientist-agents",
+    url="https://github.com/agroia-lab/open-coscientist-agriculture",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -19,14 +19,12 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ],
-    python_requires=">=3.9",
+    python_requires=">=3.11",
     install_requires=[
         "langchain>=0.3.25",
         "langchain-community>=0.3.24",
@@ -46,6 +44,7 @@ setup(
         "dev": [
             "pytest>=7.0.0",
             "pytest-cov>=4.0.0",
+            "pytest-asyncio>=0.23.0",
             "black>=23.0.0",
             "isort>=5.0.0",
             "mypy>=1.0.0",

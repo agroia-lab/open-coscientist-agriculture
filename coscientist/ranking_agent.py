@@ -351,6 +351,40 @@ class EloTournament:
 
         return records
 
+    def to_dict(self) -> dict:
+        """Serialize the tournament to a JSON-safe dictionary."""
+        return {
+            "goal": self.goal,
+            "hypotheses": {
+                uid: hyp.model_dump() for uid, hyp in self.hypotheses.items()
+            },
+            "ratings": self.ratings,
+            "match_history": {
+                # Convert tuple keys to string for JSON compatibility
+                f"{k[0]}|{k[1]}|{k[2]}": v.model_dump()
+                for k, v in self.match_history.items()
+            },
+            "_past_tournament_ratings": self._past_tournament_ratings,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "EloTournament":
+        """Deserialize the tournament from a dictionary."""
+        tournament = cls.__new__(cls)
+        tournament.goal = data["goal"]
+        tournament.hypotheses = {
+            uid: ReviewedHypothesis(**hyp_data)
+            for uid, hyp_data in data["hypotheses"].items()
+        }
+        tournament.ratings = data["ratings"]
+        tournament.match_history = {}
+        for key_str, match_data in data.get("match_history", {}).items():
+            parts = key_str.split("|")
+            key = (parts[0], parts[1], int(parts[2]))
+            tournament.match_history[key] = RankingMatchResult(**match_data)
+        tournament._past_tournament_ratings = data.get("_past_tournament_ratings", [])
+        return tournament
+
     def summarize_tournament_trajectory(self) -> str:
         """
         Summarizes the trajectory of the tournament for the supervisor agent.

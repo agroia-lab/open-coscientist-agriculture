@@ -1,6 +1,7 @@
 import hashlib
+import json
+import logging
 import os
-import pickle
 import shutil
 from datetime import datetime
 from functools import wraps
@@ -19,6 +20,8 @@ from coscientist.proximity_agent import ProximityGraph
 from coscientist.ranking_agent import EloTournament
 from coscientist.reflection_agent import ReflectionState
 from coscientist.supervisor_agent import SupervisorDecisionState
+
+logger = logging.getLogger(__name__)
 
 # Global configuration for output directory
 _OUTPUT_DIR = os.environ.get("COSCIENTIST_DIR", os.path.expanduser("~/.coscientist"))
@@ -101,8 +104,8 @@ class CoscientistState:
                 f"or call CoscientistState.clear_goal_directory('{goal}') to start fresh."
             )
 
-        # Create the directory
-        Path(self._output_dir).mkdir(parents=True, exist_ok=True)
+        # Create the directory with owner-only permissions (0o700)
+        Path(self._output_dir).mkdir(parents=True, exist_ok=True, mode=0o700)
 
         # Store goal metadata for discoverability
         goal_file = os.path.join(self._output_dir, "goal.txt")
@@ -199,10 +202,123 @@ class CoscientistState:
         else:
             return f"Directory does not exist: {goal_dir}"
 
+    def _to_dict(self) -> dict:
+        """
+        Serialize the entire state to a JSON-safe dictionary.
+
+        Returns
+        -------
+        dict
+            A dictionary representation of the state that can be JSON-serialized.
+        """
+
+        def _serialize_hypothesis(h):
+            """Serialize a hypothesis (ParsedHypothesis or ReviewedHypothesis)."""
+            if hasattr(h, "model_dump"):
+                return h.model_dump()
+            return dict(h) if h else None
+
+        def _serialize_hypothesis_list(lst):
+            return [_serialize_hypothesis(h) for h in lst]
+
+        return {
+            "goal": self.goal,
+            "literature_review": self.literature_review,
+            "generated_hypotheses": _serialize_hypothesis_list(
+                self.generated_hypotheses
+            ),
+            "reviewed_hypotheses": _serialize_hypothesis_list(self.reviewed_hypotheses),
+            "tournament": self.tournament.to_dict() if self.tournament else None,
+            "evolved_hypotheses": [
+                dict(h) if isinstance(h, dict) else h for h in self.evolved_hypotheses
+            ],
+            "meta_reviews": [
+                dict(m) if isinstance(m, dict) else m for m in self.meta_reviews
+            ],
+            "proximity_graph": (
+                self.proximity_graph.to_dict() if self.proximity_graph else None
+            ),
+            "reflection_queue": _serialize_hypothesis_list(self.reflection_queue),
+            "supervisor_decisions": [
+                dict(d) if isinstance(d, dict) else d for d in self.supervisor_decisions
+            ],
+            "final_report": (dict(self.final_report) if self.final_report else None),
+            "num_ranked_hypotheses_at_meta_review": self.num_ranked_hypotheses_at_meta_review,
+            "actions": self.actions,
+            "cosine_similarity_trajectory": self.cosine_similarity_trajectory,
+            "cluster_count_trajectory": self.cluster_count_trajectory,
+            "_iteration": self._iteration,
+        }
+
+    @classmethod
+    def _from_dict(cls, data: dict) -> "CoscientistState":
+        """
+        Deserialize a CoscientistState from a dictionary.
+
+        Parameters
+        ----------
+        data : dict
+            A dictionary previously created by _to_dict()
+
+        Returns
+        -------
+        CoscientistState
+            The reconstructed state object.
+        """
+        state = cls.__new__(cls)
+        state.goal = data["goal"]
+        state.literature_review = data.get("literature_review")
+
+        state.generated_hypotheses = [
+            ParsedHypothesis(**h) for h in data.get("generated_hypotheses", [])
+        ]
+        state.reviewed_hypotheses = [
+            ReviewedHypothesis(**h) for h in data.get("reviewed_hypotheses", [])
+        ]
+        state.reflection_queue = [
+            ParsedHypothesis(**h) for h in data.get("reflection_queue", [])
+        ]
+
+        tournament_data = data.get("tournament")
+        if tournament_data:
+            from coscientist.ranking_agent import EloTournament
+
+            state.tournament = EloTournament.from_dict(tournament_data)
+        else:
+            state.tournament = None
+
+        proximity_data = data.get("proximity_graph")
+        if proximity_data:
+            from coscientist.proximity_agent import ProximityGraph
+
+            state.proximity_graph = ProximityGraph.from_dict(proximity_data)
+        else:
+            state.proximity_graph = None
+
+        state.evolved_hypotheses = data.get("evolved_hypotheses", [])
+        state.meta_reviews = data.get("meta_reviews", [])
+        state.supervisor_decisions = data.get("supervisor_decisions", [])
+        state.final_report = data.get("final_report")
+        state.num_ranked_hypotheses_at_meta_review = data.get(
+            "num_ranked_hypotheses_at_meta_review", 0
+        )
+        state.actions = data.get("actions", [])
+        state.cosine_similarity_trajectory = data.get(
+            "cosine_similarity_trajectory", []
+        )
+        state.cluster_count_trajectory = data.get("cluster_count_trajectory", [])
+        state._iteration = data.get("_iteration", 0)
+
+        # Reconstruct output directory from goal
+        goal_hash = cls._hash_goal(state.goal)
+        state._output_dir = os.path.join(_OUTPUT_DIR, goal_hash)
+
+        return state
+
     # Persistence methods
     def save(self) -> str:
         """
-        Save the current state to a pickle file.
+        Save the current state to a JSON file.
 
         Returns
         -------
@@ -211,12 +327,13 @@ class CoscientistState:
         """
         # Generate filename with datetime and iteration
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"coscientist_state_{timestamp}_iter_{self._iteration:04d}.pkl"
+        filename = f"coscientist_state_{timestamp}_iter_{self._iteration:04d}.json"
         filepath = os.path.join(self._output_dir, filename)
 
-        # Save state to pickle file
-        with open(filepath, "wb") as f:
-            pickle.dump(self, f)
+        # Save state to JSON file
+        state_dict = self._to_dict()
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(state_dict, f, indent=2, default=str)
 
         # Increment iteration counter
         self._iteration += 1
@@ -226,20 +343,33 @@ class CoscientistState:
     @classmethod
     def load(cls, filepath: str) -> "CoscientistState":
         """
-        Load a CoscientistState from a pickle file.
+        Load a CoscientistState from a JSON file.
+
+        Also supports loading legacy pickle files with a deprecation warning.
 
         Parameters
         ----------
         filepath : str
-            Path to the pickle file to load
+            Path to the JSON (or legacy pickle) file to load
 
         Returns
         -------
         CoscientistState
             The loaded state object
         """
-        with open(filepath, "rb") as f:
-            return pickle.load(f)
+        if filepath.endswith(".pkl"):
+            logger.warning(
+                "Loading from pickle format is deprecated and will be removed in a "
+                "future version. Please re-save state to convert to JSON format."
+            )
+            import pickle
+
+            with open(filepath, "rb") as f:
+                return pickle.load(f)
+
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return cls._from_dict(data)
 
     @staticmethod
     def list_checkpoints(
@@ -279,10 +409,12 @@ class CoscientistState:
         if not os.path.exists(search_directory):
             return []
 
-        # Find all pickle files matching our naming pattern
+        # Find all checkpoint files matching our naming pattern (JSON preferred, legacy pkl supported)
         checkpoint_files = []
         for filename in os.listdir(search_directory):
-            if filename.startswith("coscientist_state_") and filename.endswith(".pkl"):
+            if filename.startswith("coscientist_state_") and (
+                filename.endswith(".json") or filename.endswith(".pkl")
+            ):
                 filepath = os.path.join(search_directory, filename)
                 checkpoint_files.append(filepath)
 

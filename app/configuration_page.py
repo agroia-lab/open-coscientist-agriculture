@@ -2,9 +2,6 @@ import multiprocessing
 import time
 
 import streamlit as st
-from langchain_anthropic import ChatAnthropic
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
 
 # Import the background process functions
 from background import (
@@ -13,6 +10,9 @@ from background import (
     coscientist_process_target,
     get_coscientist_results,
 )
+from langchain_anthropic import ChatAnthropic
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 
 # Import the configuration agent and required models
 from coscientist.configuration_agent import ConfigurationChatManager

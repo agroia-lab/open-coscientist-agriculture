@@ -6,10 +6,10 @@ by a supervisor agent.
 
 import logging
 import math
+import os
 import random
 
 import numpy as np
-from langchain_anthropic import ChatAnthropic
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -28,6 +28,57 @@ from coscientist.meta_review_agent import build_meta_review_agent
 from coscientist.reasoning_types import ReasoningType
 from coscientist.reflection_agent import build_deep_verification_agent
 from coscientist.supervisor_agent import build_supervisor_agent
+
+logger = logging.getLogger(__name__)
+
+
+def validate_api_keys() -> list[str]:
+    """
+    Validate that required API keys are present in environment variables.
+
+    Returns a list of warnings for missing optional keys.
+
+    Raises
+    ------
+    EnvironmentError
+        If required API keys are missing.
+    """
+    missing_required = []
+    warnings = []
+
+    # Required keys
+    required_keys = {
+        "OPENAI_API_KEY": "OpenAI API (used for embeddings and default LLMs)",
+        "TAVILY_API_KEY": "Tavily API (used for web research via GPT-Researcher)",
+    }
+    for key, description in required_keys.items():
+        if not os.environ.get(key):
+            missing_required.append(f"  - {key}: {description}")
+
+    if missing_required:
+        raise EnvironmentError(
+            "Missing required API keys. Please set the following environment variables:\n"
+            + "\n".join(missing_required)
+            + "\n\nSee README.md for setup instructions."
+        )
+
+    # Optional keys - warn but don't fail
+    optional_keys = {
+        "ANTHROPIC_API_KEY": "Anthropic API (needed for Claude models)",
+        "GOOGLE_API_KEY": "Google API (needed for Gemini models)",
+    }
+    for key, description in optional_keys.items():
+        if not os.environ.get(key):
+            warnings.append(f"  - {key}: {description}")
+
+    if warnings:
+        logger.warning(
+            "Missing optional API keys (some features may not work):\n"
+            + "\n".join(warnings)
+        )
+
+    return warnings
+
 
 # Generally reasoning models are better suited for the scientific reasoning
 # tasks entailed by the Coscientist system.
@@ -89,12 +140,17 @@ class CoscientistConfig:
     specialist_fields : list[str]
         The fields of expertise for generation agents. This list should be expanded
         by the configuration agent.
+    preferred_reasoning_types : list[ReasoningType] | None
+        If provided, generation agents draw reasoning types only from this
+        subset.  If ``None``, all reasoning types are available.
 
     """
 
     def __init__(
         self,
-        literature_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL["gemini-2.5-flash"],
+        literature_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL[
+            "gemini-2.5-flash"
+        ],
         generation_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         reflection_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         evolution_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
@@ -109,7 +165,11 @@ class CoscientistConfig:
             model="text-embedding-3-small", dimensions=256
         ),
         specialist_fields: list[str] | None = None,
+        preferred_reasoning_types: list[ReasoningType] | None = None,
     ):
+        # Validate API keys on config initialization
+        validate_api_keys()
+
         # TODO: Add functionality for overriding GPTResearcher config.
         self.literature_review_agent_llm = literature_review_agent_llm
         self.generation_agent_llms = generation_agent_llms
@@ -120,9 +180,34 @@ class CoscientistConfig:
         self.proximity_agent_embedding_model = proximity_agent_embedding_model
         self.final_report_agent_llm = final_report_agent_llm
         if specialist_fields is None:
-            self.specialist_fields = ["biology"]
+            self.specialist_fields = [
+                # Weed biology and management
+                "weed science",
+                "weed ecology",
+                "herbicide resistance",
+                "integrated weed management",
+                "crop-weed competition",
+                "soil seed bank ecology",
+                "cover crop science",
+                "herbicide application technology",
+                "agroecology",
+                "crop rotation and diversification",
+                # Precision agriculture and technology
+                "precision agriculture",
+                "site-specific weed management",
+                "agricultural robotics and automation",
+                "remote sensing for agriculture",
+                "geographic information systems (GIS)",
+                # Quantitative and analytical methods
+                "agricultural statistics and experimental design",
+                "Bayesian data analysis",
+                "spatial analysis and geostatistics",
+                "mechanistic and simulation modelling",
+                "agronomy",
+            ]
         else:
             self.specialist_fields = specialist_fields
+        self.preferred_reasoning_types = preferred_reasoning_types
 
 
 class CoscientistFramework:
@@ -177,7 +262,12 @@ class CoscientistFramework:
     def list_reasoning_types(self) -> list[str]:
         """
         List the names of the reasoning types.
+
+        If the config specifies ``preferred_reasoning_types``, only those
+        types are returned; otherwise all reasoning types are available.
         """
+        if self.config.preferred_reasoning_types:
+            return [rt.name for rt in self.config.preferred_reasoning_types]
         return list(ReasoningType.__members__.keys())
 
     def get_semantic_communities(
