@@ -21,4 +21,8 @@ def __getattr__(name):
         from coscientist.global_state import CoscientistStateManager
 
         return CoscientistStateManager
+    elif name == "ResearchProfile":
+        from coscientist.profiles import ResearchProfile
+
+        return ResearchProfile
     raise AttributeError(f"module 'coscientist' has no attribute {name!r}")

@@ -140,6 +140,9 @@ class CoscientistConfig:
     specialist_fields : list[str]
         The fields of expertise for generation agents. This list should be expanded
         by the configuration agent.
+    preferred_reasoning_types : list[ReasoningType] | None
+        If provided, generation agents draw reasoning types only from this
+        subset.  If ``None``, all reasoning types are available.
 
     """
 
@@ -160,6 +163,7 @@ class CoscientistConfig:
             model="text-embedding-3-small", dimensions=256
         ),
         specialist_fields: list[str] | None = None,
+        preferred_reasoning_types: list[ReasoningType] | None = None,
     ):
         # Validate API keys on config initialization
         validate_api_keys()
@@ -201,6 +205,7 @@ class CoscientistConfig:
             ]
         else:
             self.specialist_fields = specialist_fields
+        self.preferred_reasoning_types = preferred_reasoning_types
 
 
 class CoscientistFramework:
@@ -255,7 +260,12 @@ class CoscientistFramework:
     def list_reasoning_types(self) -> list[str]:
         """
         List the names of the reasoning types.
+
+        If the config specifies ``preferred_reasoning_types``, only those
+        types are returned; otherwise all reasoning types are available.
         """
+        if self.config.preferred_reasoning_types:
+            return [rt.name for rt in self.config.preferred_reasoning_types]
         return list(ReasoningType.__members__.keys())
 
     def get_semantic_communities(
