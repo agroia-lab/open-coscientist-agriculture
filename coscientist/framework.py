@@ -550,9 +550,9 @@ class CoscientistFramework:
             initial_supervisor_state = self.state_manager.next_supervisor_state()
             final_supervisor_state = supervisor_agent.invoke(initial_supervisor_state)
             current_action = final_supervisor_state["action"]
-            assert current_action in self.available_actions(), (
-                f"Invalid action: {current_action}. Available actions: {self.available_actions()}"
-            )
+            assert (
+                current_action in self.available_actions()
+            ), f"Invalid action: {current_action}. Available actions: {self.available_actions()}"
             self.state_manager.update_supervisor_decision(final_supervisor_state)
             self.state_manager.add_action(current_action)
             _ = await getattr(self, current_action)()

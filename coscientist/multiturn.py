@@ -23,9 +23,9 @@ def create_agent_node_fn(
     **prompt_kwargs: dict[str, Any],
 ) -> Callable[[MultiTurnState], MultiTurnState]:
     """Create an agent node function."""
-    assert "transcript" not in prompt_kwargs, (
-        "transcript will be added from state and should not be in prompt_kwargs"
-    )
+    assert (
+        "transcript" not in prompt_kwargs
+    ), "transcript will be added from state and should not be in prompt_kwargs"
 
     def agent_fn(state):
         # Build prompt args from state

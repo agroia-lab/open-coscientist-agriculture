@@ -39,7 +39,7 @@ setup(
         "langchain-openai>=0.3.18",
         "langchain-anthropic>=0.3.15",
         "langchain-google-genai>=2.1.5",
-        "networkx>=3.5",
+        "networkx>=3.2",
         "scikit-learn>=1.7.0",
     ],
     extras_require={

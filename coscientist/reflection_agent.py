@@ -230,12 +230,12 @@ def deep_verification_node(
     available_keys = list(state.keys())
 
     # More informative assertions
-    assert "_assumption_research_results" in state, (
-        f"Missing '_assumption_research_results'. Available keys: {available_keys}"
-    )
-    assert "_causal_reasoning" in state, (
-        f"Missing '_causal_reasoning'. Available keys: {available_keys}"
-    )
+    assert (
+        "_assumption_research_results" in state
+    ), f"Missing '_assumption_research_results'. Available keys: {available_keys}"
+    assert (
+        "_causal_reasoning" in state
+    ), f"Missing '_causal_reasoning'. Available keys: {available_keys}"
 
     # Combine assumption research results into a single string
     assumption_research = "\n\n".join(state["_assumption_research_results"].values())

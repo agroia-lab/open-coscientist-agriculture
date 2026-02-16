@@ -716,9 +716,9 @@ class CoscientistStateManager:
         """
         Update the proximity graph state.
         """
-        assert self._state.proximity_graph is not None, (
-            "Proximity graph is not initialized"
-        )
+        assert (
+            self._state.proximity_graph is not None
+        ), "Proximity graph is not initialized"
         self._state.proximity_graph.update_edges()
         self._state.cosine_similarity_trajectory.append(
             self._state.proximity_graph.average_cosine_similarity
@@ -782,9 +782,9 @@ class CoscientistStateManager:
         self._state.reflection_queue.append(parsed_hypothesis)
 
         # Add to proximity graph if it exists
-        assert self._state.proximity_graph is not None, (
-            "Proximity graph is not initialized"
-        )
+        assert (
+            self._state.proximity_graph is not None
+        ), "Proximity graph is not initialized"
         self._state.proximity_graph.add_hypothesis(parsed_hypothesis)
 
     @_maybe_save(n=1)
