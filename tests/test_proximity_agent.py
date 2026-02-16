@@ -1,7 +1,6 @@
 """Tests for coscientist/proximity_agent.py - ProximityGraph serialization."""
 
 import numpy as np
-import pytest
 
 from coscientist.proximity_agent import ProximityGraph
 
@@ -52,9 +51,7 @@ class TestProximityGraphSerialization:
 
     def test_to_dict_numpy_converted_to_list(self):
         g = ProximityGraph()
-        g.graph.add_node(
-            "n1", hypothesis="H", embedding=np.array([0.1, 0.2])
-        )
+        g.graph.add_node("n1", hypothesis="H", embedding=np.array([0.1, 0.2]))
         data = g.to_dict()
         # Embedding should be a regular Python list (JSON-safe)
         assert isinstance(data["nodes"]["n1"]["embedding"], list)

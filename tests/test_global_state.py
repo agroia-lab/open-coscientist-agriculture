@@ -7,7 +7,7 @@ import tempfile
 
 import pytest
 
-from coscientist.custom_types import ParsedHypothesis, ReviewedHypothesis
+from coscientist.custom_types import ParsedHypothesis
 
 try:
     from coscientist.global_state import CoscientistState, CoscientistStateManager
@@ -185,7 +185,9 @@ class TestStateWithTournament:
         assert sample_reviewed_hypothesis.uid in loaded.tournament.hypotheses
         assert loaded.tournament.ratings[sample_reviewed_hypothesis.uid] == 1350
 
-    def test_save_load_with_reviewed_hypotheses(self, state, sample_reviewed_hypothesis):
+    def test_save_load_with_reviewed_hypotheses(
+        self, state, sample_reviewed_hypothesis
+    ):
         state.reviewed_hypotheses.append(sample_reviewed_hypothesis)
 
         filepath = state.save()

@@ -10,11 +10,24 @@ import os
 import random
 
 import numpy as np
-from langchain_anthropic import ChatAnthropic
 from langchain_core.embeddings import Embeddings
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+from coscientist.evolution_agent import build_evolution_agent
+from coscientist.final_report_agent import build_final_report_agent
+from coscientist.generation_agent import (
+    CollaborativeConfig,
+    IndependentConfig,
+    build_generation_agent,
+)
+from coscientist.global_state import CoscientistStateManager
+from coscientist.literature_review_agent import build_literature_review_agent
+from coscientist.meta_review_agent import build_meta_review_agent
+from coscientist.reasoning_types import ReasoningType
+from coscientist.reflection_agent import build_deep_verification_agent
+from coscientist.supervisor_agent import build_supervisor_agent
 
 logger = logging.getLogger(__name__)
 
@@ -66,19 +79,6 @@ def validate_api_keys() -> list[str]:
 
     return warnings
 
-from coscientist.evolution_agent import build_evolution_agent
-from coscientist.final_report_agent import build_final_report_agent
-from coscientist.generation_agent import (
-    CollaborativeConfig,
-    IndependentConfig,
-    build_generation_agent,
-)
-from coscientist.global_state import CoscientistStateManager
-from coscientist.literature_review_agent import build_literature_review_agent
-from coscientist.meta_review_agent import build_meta_review_agent
-from coscientist.reasoning_types import ReasoningType
-from coscientist.reflection_agent import build_deep_verification_agent
-from coscientist.supervisor_agent import build_supervisor_agent
 
 # Generally reasoning models are better suited for the scientific reasoning
 # tasks entailed by the Coscientist system.
@@ -148,7 +148,9 @@ class CoscientistConfig:
 
     def __init__(
         self,
-        literature_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL["gemini-2.5-flash"],
+        literature_review_agent_llm: BaseChatModel = _CHEAPER_LLM_POOL[
+            "gemini-2.5-flash"
+        ],
         generation_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         reflection_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
         evolution_agent_llms: dict[str, BaseChatModel] = _SMARTER_LLM_POOL,
@@ -548,9 +550,9 @@ class CoscientistFramework:
             initial_supervisor_state = self.state_manager.next_supervisor_state()
             final_supervisor_state = supervisor_agent.invoke(initial_supervisor_state)
             current_action = final_supervisor_state["action"]
-            assert (
-                current_action in self.available_actions()
-            ), f"Invalid action: {current_action}. Available actions: {self.available_actions()}"
+            assert current_action in self.available_actions(), (
+                f"Invalid action: {current_action}. Available actions: {self.available_actions()}"
+            )
             self.state_manager.update_supervisor_decision(final_supervisor_state)
             self.state_manager.add_action(current_action)
             _ = await getattr(self, current_action)()

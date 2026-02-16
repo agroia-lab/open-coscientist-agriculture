@@ -196,9 +196,9 @@ class EloTournament:
 
         # Parse the response to find the winner
         winner_str = response_text.split("WINNER:")[-1].strip()
-        assert ("1" in winner_str) ^ (
-            "2" in winner_str
-        ), f"Invalid winner string: {winner_str}"
+        assert ("1" in winner_str) ^ ("2" in winner_str), (
+            f"Invalid winner string: {winner_str}"
+        )
         winner = 1 if "1" in winner_str else 2
 
         return winner, response_text

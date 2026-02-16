@@ -2,7 +2,10 @@
 
 import pytest
 
-from coscientist.custom_types import ParsedHypothesis, ReviewedHypothesis, RankingMatchResult
+from coscientist.custom_types import (
+    ParsedHypothesis,
+    ReviewedHypothesis,
+)
 
 
 @pytest.fixture

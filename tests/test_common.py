@@ -2,7 +2,11 @@
 
 import pytest
 
-from coscientist.common import parse_hypothesis_markdown, _parse_numbered_list, load_prompt
+from coscientist.common import (
+    _parse_numbered_list,
+    load_prompt,
+    parse_hypothesis_markdown,
+)
 
 
 class TestParseHypothesisMarkdown:

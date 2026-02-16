@@ -1,8 +1,10 @@
 """Tests for coscientist/custom_types.py - Pydantic data models."""
 
-import pytest
-
-from coscientist.custom_types import ParsedHypothesis, ReviewedHypothesis, RankingMatchResult
+from coscientist.custom_types import (
+    ParsedHypothesis,
+    RankingMatchResult,
+    ReviewedHypothesis,
+)
 
 
 class TestParsedHypothesis:

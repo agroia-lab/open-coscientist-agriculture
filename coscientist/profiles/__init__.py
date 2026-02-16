@@ -20,7 +20,7 @@ broomrape_tomato
 from dataclasses import dataclass, field
 from typing import Optional
 
-from coscientist.reasoning_types import ReasoningType
+from coscientist.reasoning_types import ReasoningType as ReasoningType
 
 
 @dataclass

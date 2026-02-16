@@ -227,13 +227,10 @@ class CoscientistState:
             "generated_hypotheses": _serialize_hypothesis_list(
                 self.generated_hypotheses
             ),
-            "reviewed_hypotheses": _serialize_hypothesis_list(
-                self.reviewed_hypotheses
-            ),
+            "reviewed_hypotheses": _serialize_hypothesis_list(self.reviewed_hypotheses),
             "tournament": self.tournament.to_dict() if self.tournament else None,
             "evolved_hypotheses": [
-                dict(h) if isinstance(h, dict) else h
-                for h in self.evolved_hypotheses
+                dict(h) if isinstance(h, dict) else h for h in self.evolved_hypotheses
             ],
             "meta_reviews": [
                 dict(m) if isinstance(m, dict) else m for m in self.meta_reviews
@@ -243,12 +240,9 @@ class CoscientistState:
             ),
             "reflection_queue": _serialize_hypothesis_list(self.reflection_queue),
             "supervisor_decisions": [
-                dict(d) if isinstance(d, dict) else d
-                for d in self.supervisor_decisions
+                dict(d) if isinstance(d, dict) else d for d in self.supervisor_decisions
             ],
-            "final_report": (
-                dict(self.final_report) if self.final_report else None
-            ),
+            "final_report": (dict(self.final_report) if self.final_report else None),
             "num_ranked_hypotheses_at_meta_review": self.num_ranked_hypotheses_at_meta_review,
             "actions": self.actions,
             "cosine_similarity_trajectory": self.cosine_similarity_trajectory,
@@ -722,9 +716,9 @@ class CoscientistStateManager:
         """
         Update the proximity graph state.
         """
-        assert (
-            self._state.proximity_graph is not None
-        ), "Proximity graph is not initialized"
+        assert self._state.proximity_graph is not None, (
+            "Proximity graph is not initialized"
+        )
         self._state.proximity_graph.update_edges()
         self._state.cosine_similarity_trajectory.append(
             self._state.proximity_graph.average_cosine_similarity
@@ -788,9 +782,9 @@ class CoscientistStateManager:
         self._state.reflection_queue.append(parsed_hypothesis)
 
         # Add to proximity graph if it exists
-        assert (
-            self._state.proximity_graph is not None
-        ), "Proximity graph is not initialized"
+        assert self._state.proximity_graph is not None, (
+            "Proximity graph is not initialized"
+        )
         self._state.proximity_graph.add_hypothesis(parsed_hypothesis)
 
     @_maybe_save(n=1)

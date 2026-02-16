@@ -100,11 +100,13 @@ class ProximityGraph:
             }
         edges = []
         for u, v, data in self.graph.edges(data=True):
-            edges.append({
-                "source": str(u),
-                "target": str(v),
-                "weight": float(data.get("weight", 0.0)),
-            })
+            edges.append(
+                {
+                    "source": str(u),
+                    "target": str(v),
+                    "weight": float(data.get("weight", 0.0)),
+                }
+            )
         return {"nodes": nodes, "edges": edges}
 
     @classmethod

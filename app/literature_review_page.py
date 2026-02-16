@@ -61,7 +61,7 @@ def display_literature_review_page(state):
     selected_index = st.selectbox(
         "Choose a research subtopic:",
         range(len(subtopics)),
-        format_func=lambda x: f"{x+1}. {subtopics[x]}",
+        format_func=lambda x: f"{x + 1}. {subtopics[x]}",
         index=st.session_state.selected_subtopic_index,
         key="subtopic_selector",
     )
@@ -107,4 +107,4 @@ def display_literature_review_page(state):
         st.markdown("**All Research Subtopics:**")
         for i, subtopic in enumerate(subtopics):
             marker = "🔹" if i == selected_index else "◦"
-            st.write(f"{marker} {i+1}. {subtopic}")
+            st.write(f"{marker} {i + 1}. {subtopic}")

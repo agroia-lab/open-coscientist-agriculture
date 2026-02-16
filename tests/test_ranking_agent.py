@@ -2,14 +2,13 @@
 
 import pytest
 
+from coscientist.custom_types import RankingMatchResult
 from coscientist.ranking_agent import (
     DEFAULT_ELO,
-    K_FACTOR,
     EloTournament,
     calculate_expected_score,
     update_elo,
 )
-from coscientist.custom_types import ReviewedHypothesis, RankingMatchResult
 
 
 class TestCalculateExpectedScore:

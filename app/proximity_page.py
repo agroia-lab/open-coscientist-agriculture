@@ -223,7 +223,7 @@ def display_proximity_graph_page(state):
     # Display communities
     if communities:
         for i, community in enumerate(communities):
-            with st.expander(f"Community {i+1} ({len(community)} hypotheses)"):
+            with st.expander(f"Community {i + 1} ({len(community)} hypotheses)"):
                 for node_id in community:
                     hypothesis_text = pruned_graph.nodes[node_id].get(
                         "hypothesis", f"Hypothesis {node_id}"
