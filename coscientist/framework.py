@@ -89,6 +89,9 @@ class CoscientistConfig:
     specialist_fields : list[str]
         The fields of expertise for generation agents. This list should be expanded
         by the configuration agent.
+    max_subtopics : int
+        Maximum number of subtopics for the literature review agent to decompose
+        the research goal into. Defaults to 5.
 
     """
 
@@ -109,6 +112,7 @@ class CoscientistConfig:
             model="text-embedding-3-small", dimensions=256
         ),
         specialist_fields: list[str] | None = None,
+        max_subtopics: int = 5,
     ):
         # TODO: Add functionality for overriding GPTResearcher config.
         self.literature_review_agent_llm = literature_review_agent_llm
@@ -119,6 +123,7 @@ class CoscientistConfig:
         self.supervisor_agent_llm = supervisor_agent_llm
         self.proximity_agent_embedding_model = proximity_agent_embedding_model
         self.final_report_agent_llm = final_report_agent_llm
+        self.max_subtopics = max_subtopics
         if specialist_fields is None:
             self.specialist_fields = ["biology"]
         else:
@@ -287,8 +292,7 @@ class CoscientistFramework:
                 self.config.literature_review_agent_llm
             )
             initial_lit_review_state = self.state_manager.next_literature_review_state(
-                # TODO: Make this configurable
-                max_subtopics=5
+                max_subtopics=self.config.max_subtopics
             )
             final_lit_review_state = await literature_review_agent.ainvoke(
                 initial_lit_review_state
@@ -395,8 +399,7 @@ class CoscientistFramework:
         Expands the literature review by adding more subtopics.
         """
         initial_lit_review_state = self.state_manager.next_literature_review_state(
-            # TODO: Make this configurable
-            max_subtopics=5
+            max_subtopics=self.config.max_subtopics
         )
         literature_review_agent = build_literature_review_agent(
             self.config.literature_review_agent_llm
